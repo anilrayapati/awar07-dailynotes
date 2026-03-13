@@ -1,0 +1,61 @@
+
+
+
+Cloudtrail : Continuously log your AWS account activity.
+
+--> Enabled by defaut. It stores only last 90 days logs. 
+--> We can send logs to S3 bucket / Cloudwatch and we can setup lifecycle rule / retention period.
+--> We can filter logs based on multiple options (username, Accesskey, EventName, event source)
+
+1. It cannot track whats happening inside the resource we have launched 
+(ec2 instance os operation, S3 Object level operations (default), Table level operations)
+
+
+4 Types of trails available:
+
+1. Management trail : Capture management operations performed on your AWS resources.
+2. Data trail : S3, lambda, dynamodb
+3. Insight events : abnormal traffic : Identify unusual activity, errors, or user behavior in your account.
+4. Network trail
+
+--> Organisations: We can manage Multiple accounts in a single roof. We can have a dedicated AWS account for logging purposes. 
+
+---
+
+Cred got compromised: 
+
+Disbale cred, Reset the password, Enable MFA..!!
+--> Did he created any other user.?
+--> What are all the other activities this guy performed.?
+--> Block network Traffic at NACLs. (VPC FlowLogs, Login--> Cloudtrail)
+--> Incident investigation.
+
+---
+
+Trusted Advisor : Provided suggestions on best practices we have to follow on below categeries.
+--> If we are in basic support plan, we get only some suggestions.
+
+Cost optimization : 
+Performance : 
+Security : 
+Fault tolerance : 
+Service limits : 
+Operational excellence : 
+
+--> We inspect all the finding every quarterly.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

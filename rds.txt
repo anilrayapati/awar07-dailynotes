@@ -159,6 +159,20 @@ Complex JOINs
 Fixed Schema
 Financial Reporting
 
+==============
 
 
+Elasticache : In-memory caching service for RDS.
+
+--> Redis
+	--> valkey community driven fork of redis. 100% opensource
+	--> redis OSS : original opensource redis
+
+--> memcacheD
+
+
+---
+
+DynamoDB also has a caching service. 
+Service name: DAX / DynamoDB Accelerator
 

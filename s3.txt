@@ -326,18 +326,19 @@ MultiPart Upload : Deviding a large file into multiple parts and uploading small
 
 aws s3 cp largefile.mp4 s3://bucket-name/ --part-size 10MB
 
+====
+
+Presign url : temp url that expires automatically after given ttl value.
+
 
 ==================
 
 Cloudfront : 
 
+defautl ttl value : 86400 seconds
 
 
-
-
-
-
-
+aws s3 presign s3://bucket/objectname --expires-in 60
 
 
 
