@@ -44,13 +44,81 @@ Operational excellence :
 
 --> We inspect all the finding every quarterly.
 
+===========
+
+D: 16/03/2026
+
+Amazon Config : Record and evaluate configurations of your AWS resources. 
+
+PCS DSS (payment Card Industry Data Security Stanard)
+HIPAA (health insurance Portability and Accountability Act)
+SOC2 : Service Organisation Control 2
+CIS : Center for Internet Security
+GDPR: general Data protection Regulation
+ISO 27001
+
+---
+
+AWS Shield : Managed DDoS protection service : 
+--> Enabled by default.
+
+AWS Shield Advanced : $3000 / month
+
+--> ASG + ELB 
+--> Cloudfront (Has inbuild capability to handle DDoS Attacks)
+--> Shield Adavanced
+
+---
+
+AWS WAF : Web Application Firewall : Traffic filter before it reaches our appliocation delivering via ALB, API Gateway...
+
+---
+
+Redshift : 
+
+Data warehouse : 
+
+OLTP : RDS : Customer --> order
+OLAP : Redshift 
+
+--> Redshift uses Columnar Storage		(Regular database: row-by-row)
+--> MPP : Massively Parallel processing (Data stores across the nodes)
+--> Default Data Compression : 
+
+Leader Node : The "manager". It receives the SQL query, create an execution plan, and distributes wqorkto the computer nodes. It doesn't store user data. 
+Compute Node : The "Worker". It received instructions from leader node and executes the query in parallel on theit portion of the data and send result back to the leader node. 
+
+RA3 : RMS Redshift managed storage.. 
 
 
+WLM : Auto-WLM : We can define queues with priorities.
+MVs : Materialised Views : Pre-compute and store the results of complex queries. 
+
+==========
+
+1. Homogeneous Migration : 
+On-Prem / AWS Existing DB Engine (mysql) --> AWS RDS DB Engine (mysql)
+
+mysql --> DMS --> mysql
 
 
+2. Heterogenious Migration : 
+On-Prem / AWS Existing DB Engine (mysql/Mongo/Redshift) --> AWS RDS DB Engine (mysql/postgresql)
+
+postgresql --> DMS + SCT --> mysql
+
+Step 1 : Create a DMS CLuster
+Step 2 : Create a Source Endpoint
+Step 3 : Create a Target Endpoint
+
+Step 4 : Configure the migration task
 
 
+Migrate only: Migrate data from source to target once (Full load)
+Migrate and replicate : Migrate data from source to target once and continue to replicate changes (Full load and CDC)
+Replicate only : Replicate data from source to target now or at a specified milestone (CDC only)
 
+CDC : Change Data Capture
 
 
 
