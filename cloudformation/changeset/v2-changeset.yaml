@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Aviz Academy - Change Set Demo - Version 2 (t3.small)
+
+Parameters:
+
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+
+Resources:
+
+  DemoSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Aviz Changeset Demo SG
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+  DemoEC2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: "{{resolve:ssm:/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2}}"
+      InstanceType: t3.small        # <-- Changed from t3.micro
+      SecurityGroupIds:
+        - !Ref DemoSG
+      Tags:
+        - Key: Name
+          Value: aviz-changeset-ec2
+
+Outputs:
+
+  InstanceId:
+    Value: !Ref DemoEC2
+
+  InstanceType:
+    Value: t3.small

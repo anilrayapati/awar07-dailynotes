@@ -1,0 +1,149 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Aviz Academy - WaitCondition Demo with Webpage
+
+Parameters:
+
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: Select your VPC
+
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: Select a Public Subnet (must belong to VPC above)
+
+Resources:
+
+  # 1. SECURITY GROUP - Allow HTTP and SSH
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow HTTP and SSH
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: aviz-waitcondition-sg
+
+  # 2. WAIT HANDLE - Receives the signal from EC2
+  MyWaitHandle:
+    Type: AWS::CloudFormation::WaitConditionHandle
+
+  # 3. EC2 INSTANCE - Installs apache, creates webpage, then signals
+  MyEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: "{{resolve:ssm:/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2}}"
+      InstanceType: t3.micro
+      SubnetId: !Ref SubnetId
+      SecurityGroupIds:
+        - !Ref MySecurityGroup
+      Tags:
+        - Key: Name
+          Value: aviz-waitcondition-ec2
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+
+          # Install cfn-bootstrap (for cfn-signal) and apache
+          yum install -y aws-cfn-bootstrap
+          yum install -y httpd
+
+          # Create the webpage
+          cat > /var/www/html/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Aviz Academy</title>
+              <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body {
+                  font-family: Arial, sans-serif;
+                  background-color: #1A1A2E;
+                  color: white;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  min-height: 100vh;
+                }
+                .container {
+                  text-align: center;
+                  padding: 60px 40px;
+                  border: 2px solid #FF6600;
+                  border-radius: 16px;
+                  max-width: 600px;
+                }
+                h1   { color: #FF6600; font-size: 48px; margin-bottom: 10px; }
+                h2   { color: #FF6600; font-size: 24px; margin-bottom: 30px; }
+                p    { font-size: 18px; margin-bottom: 12px; line-height: 1.6; }
+                .badge {
+                  display: inline-block;
+                  background-color: #FF6600;
+                  color: white;
+                  padding: 12px 32px;
+                  border-radius: 8px;
+                  font-size: 18px;
+                  font-weight: bold;
+                  margin-top: 30px;
+                }
+                .tick { font-size: 60px; margin-bottom: 20px; }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="tick">✅</div>
+                <h1>Aviz Academy</h1>
+                <h2>WaitCondition Demo</h2>
+                <p>This EC2 was fully provisioned by CloudFormation.</p>
+                <p>WaitCondition held the deployment until Apache was ready and this page was live!</p>
+                <p>Only after this page was ready, CloudFormation marked the stack as <strong>CREATE_COMPLETE</strong>.</p>
+                <div class="badge">Learn by Doing, Not Just Watching</div>
+              </div>
+            </body>
+          </html>
+          EOF
+
+          # Start Apache
+          systemctl enable httpd --now
+
+          # Simulate real-world setup time
+          sleep 60
+
+          # Signal CloudFormation — everything is ready
+          /opt/aws/bin/cfn-signal -e 0 -r "Done" "${MyWaitHandle}"
+
+  # 4. WAIT CONDITION - Pauses CFN until signal is received
+  MyWaitCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    DependsOn: MyEC2Instance
+    Properties:
+      Handle: !Ref MyWaitHandle
+      Timeout: '60'
+      Count: 1
+
+  # 5. S3 BUCKET - Created only after EC2 signals success
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
+    DependsOn: MyWaitCondition
+    Properties:
+      BucketName: !Sub "aviz-waitcondition-demo-${AWS::AccountId}"
+
+# ─────────────────────────────────────────────
+Outputs:
+
+  WebsiteURL:
+    Description: Open this URL after stack is CREATE_COMPLETE
+    Value: !Sub "http://${MyEC2Instance.PublicIp}"
+
+  InstanceId:
+    Value: !Ref MyEC2Instance
+
+  BucketName:
+    Value: !Ref MyS3Bucket
