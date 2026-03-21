@@ -1,0 +1,24 @@
+
+**DONT ENABLE ORGANISATIONS IN YOUR FREE ACCOUNT. 
+
+sandbox/training	- POC
+Dev					- Dev
+SQA					- testing
+UAT					- Pre-prod
+Prod				- Prod / live
+Central Networking	- Endpoints/Transit Gateway
+Central logging		- Central logs in s3 bucket
+Management account	- Where AWS Organisation service enabled
+
+Central billing access
+Central permissions management using Policies (SCP / Tag Policies)
+
+**DONT ENABLE ORGANISATIONS IN YOUR FREE ACCOUNT. 
+
+SCP : Service control policies
+
+
+
+
+
+
