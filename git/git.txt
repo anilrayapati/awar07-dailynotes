@@ -1,0 +1,71 @@
+
+
+git --> 
+
+1970 - SCCM (Source code control system) : 1 file
+		RCM (Revision Control System) : x files, 1 Directory
+		CVS (Concurrent version system) : x file, x Directory, 1 User
+2000 - SVN (Subversions) : x files, x dir, x users
+2005 - GIT (Global Information Tracker) (Linux Tarvalds)
+
+Gitlab, Bitbucket, Github, code commit
+
+
+GIT: 
+--> Distributed in Nature
+--> Branching and merging
+
+Download and Install git in your laptop: https://git-scm.com/install/windows
+
+git --version
+
+
+git config --global user.name "avinash"
+git config --global user.email "avizway@gmail.com"
+git config --list
+
+in your desktop, create a directory and verify "git status"
+then run "git init".. then run "git status" command again
+
+git add .
+git commit -m "commit msg"
+
+git status
+
+git logs		--> Shows the logs
+git logs --oneline
+
+git show <commit-id>			--> Detailed info about the specific commit
+
+git diff <commitid1>..<commitid2>
+git diff d0d4a88..6eee8c8
+
+---
+
+.gitignore sample file
+
+#Ignore bkp file
+*.bkp
+
+#Ignore log format files
+*.log
+
+#macOS
+.DS_Store
+
+#Widnows
+Thumbs.db
+
+[ab]*.exe
+
+----
+
+
+
+
+
+
+
+
+
+
